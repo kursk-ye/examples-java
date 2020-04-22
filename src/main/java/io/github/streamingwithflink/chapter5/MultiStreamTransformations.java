@@ -57,6 +57,7 @@ public class MultiStreamTransformations {
             .addSource(new SmokeLevelSource())
             .setParallelism(1);
 
+
         // group sensor readings by sensor id
         KeyedStream<SensorReading, String> keyedTempReadings = tempReadings
             .keyBy(r -> r.id);
