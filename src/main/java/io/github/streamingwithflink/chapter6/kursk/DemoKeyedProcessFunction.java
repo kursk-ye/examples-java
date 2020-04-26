@@ -8,12 +8,14 @@ import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
 import org.apache.flink.util.Collector;
 
 /*
- * 一个 ElecMeterReading 类型的数据流，E lecMeterReading 有个属性 DayElecValue
+ * 一个 ElecMeterReading 类型的数据流，ElecMeterReading 有个属性 DayElecValue
  * 连续一秒中该属性单调增长，则报警
  */
 public class DemoKeyedProcessFunction extends KeyedProcessFunction<String, ElecMeterReading, String> {
     ValueState<Double> lastDayElecValue = this.getRuntimeContext().getState(new ValueStateDescriptor("lastTemp", Types.DOUBLE));
     ValueState<Long> currentTimer = this.getRuntimeContext().getState(new ValueStateDescriptor("timer", Types.LONG));
+
+
 
     @Override
     public void processElement(ElecMeterReading value, Context ctx, Collector<String> out) throws Exception {
