@@ -38,6 +38,7 @@ public class SensorReading {
         this.temperature = temperature;
     }
 
+    @Override
     public String toString() {
         return "(" + this.id + ", " + this.timestamp + ", " + this.temperature + ")";
     }

@@ -12,10 +12,16 @@ import org.apache.flink.util.Collector;
  * 连续一秒中该属性单调增长，则报警
  */
 public class DemoKeyedProcessFunction extends KeyedProcessFunction<String, ElecMeterReading, String> {
+    /*
+    * Exception in thread "main" java.lang.IllegalStateException: The runtime context has not been initialized.
+	at org.apache.flink.api.common.functions.AbstractRichFunction.getRuntimeContext(AbstractRichFunction.java:53)
+	at io.github.streamingwithflink.chapter6.kursk.DemoKeyedProcessFunction.<init>(DemoKeyedProcessFunction.java:15)
+	at io.github.streamingwithflink.chapter6.kursk.DemoWarnning1.main(DemoWarnning1.java:18)
+	*
+	*  it is a bug ?
+	* */
     ValueState<Double> lastDayElecValue = this.getRuntimeContext().getState(new ValueStateDescriptor("lastTemp", Types.DOUBLE));
     ValueState<Long> currentTimer = this.getRuntimeContext().getState(new ValueStateDescriptor("timer", Types.LONG));
-
-
 
     @Override
     public void processElement(ElecMeterReading value, Context ctx, Collector<String> out) throws Exception {

@@ -5,12 +5,19 @@ public class ElecMeterReading {
     private Long timestamp;
     private  Double DayElecValue;
 
+    public ElecMeterReading(){
+        this.id = "null";
+        this.timestamp = Long.MIN_VALUE;
+        this.DayElecValue = Double.MIN_VALUE;
+    }
+
     public ElecMeterReading(String id , Long timestamp, Double DayElecValue){
         this.id = id;
         this.timestamp = timestamp;
         this.DayElecValue = DayElecValue;
     }
 
+    @Override
     public String toString(){
         return  "(ElecMeterReading: " + "id: " + this.id + ", timestamp: " + this.timestamp + ", DayElecValue: " + this.DayElecValue + ")";
     }
