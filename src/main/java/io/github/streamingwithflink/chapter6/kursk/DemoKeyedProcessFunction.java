@@ -4,6 +4,7 @@ import io.github.streamingwithflink.chapter5.kursk.ElecMeterReading;
 import org.apache.flink.api.common.state.ValueState;
 import org.apache.flink.api.common.state.ValueStateDescriptor;
 import org.apache.flink.api.common.typeinfo.Types;
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.KeyedProcessFunction;
 import org.apache.flink.util.Collector;
 
@@ -12,16 +13,18 @@ import org.apache.flink.util.Collector;
  * 连续一秒中该属性单调增长，则报警
  */
 public class DemoKeyedProcessFunction extends KeyedProcessFunction<String, ElecMeterReading, String> {
-    /*
-    * Exception in thread "main" java.lang.IllegalStateException: The runtime context has not been initialized.
-	at org.apache.flink.api.common.functions.AbstractRichFunction.getRuntimeContext(AbstractRichFunction.java:53)
-	at io.github.streamingwithflink.chapter6.kursk.DemoKeyedProcessFunction.<init>(DemoKeyedProcessFunction.java:15)
-	at io.github.streamingwithflink.chapter6.kursk.DemoWarnning1.main(DemoWarnning1.java:18)
-	*
-	*  it is a bug ?
-	* */
-    ValueState<Double> lastDayElecValue = this.getRuntimeContext().getState(new ValueStateDescriptor("lastTemp", Types.DOUBLE));
-    ValueState<Long> currentTimer = this.getRuntimeContext().getState(new ValueStateDescriptor("timer", Types.LONG));
+
+    ValueState<Double> lastDayElecValue;
+    ValueState<Long> currentTimer;
+
+    @Override
+    public void open(Configuration parameters) throws Exception {
+        lastDayElecValue =
+                this.getRuntimeContext().getState(new ValueStateDescriptor("lastTemp", Types.DOUBLE));
+        currentTimer =
+                this.getRuntimeContext().getState(new ValueStateDescriptor("timer", Types.LONG));
+    }
+
 
     @Override
     public void processElement(ElecMeterReading value, Context ctx, Collector<String> out) throws Exception {
