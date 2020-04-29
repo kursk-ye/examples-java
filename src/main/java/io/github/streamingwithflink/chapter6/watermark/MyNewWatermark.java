@@ -1,4 +1,4 @@
-package io.github.streamingwithflink.chapter6.kursk;
+package io.github.streamingwithflink.chapter6.watermark;
 
 import io.github.streamingwithflink.chapter5.kursk.ElecMeterReading;
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks;

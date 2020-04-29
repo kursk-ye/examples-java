@@ -1,4 +1,4 @@
-package io.github.streamingwithflink.chapter6.kursk;
+package io.github.streamingwithflink.chapter6.processfunction;
 
 import io.github.streamingwithflink.chapter5.kursk.ElecMeterReading;
 import io.github.streamingwithflink.chapter5.kursk.ElecMeterSource;

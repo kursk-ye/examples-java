@@ -1,9 +1,7 @@
-package io.github.streamingwithflink.chapter6.kursk;
+package io.github.streamingwithflink.chapter6.processfunction;
 
-import io.github.streamingwithflink.chapter5.kursk.ElecMeterReading;
 import io.github.streamingwithflink.chapter5.kursk.ElecMeterSource;
 import org.apache.flink.streaming.api.TimeCharacteristic;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
