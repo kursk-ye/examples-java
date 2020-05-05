@@ -15,7 +15,7 @@ import org.apache.flink.streaming.api.functions.co.KeyedBroadcastProcessFunction
 import org.apache.flink.util.Collector;
 
 public class ConnectedStateDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
 
@@ -34,7 +34,7 @@ public class ConnectedStateDemo {
                 .connect(broadcastThresholds)
                 .process(new UpdatableTemperatureAlertFunction());
 
-
+        env.execute();
     }
 }
 

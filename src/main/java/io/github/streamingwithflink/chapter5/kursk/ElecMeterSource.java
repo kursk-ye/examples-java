@@ -17,13 +17,13 @@ public class ElecMeterSource extends RichParallelSourceFunction<ElecMeterReading
         double[] ElecValues = new double[10];
 
         while (running){
-            for(int i = 0 ; i < 4; i++){
+            for(int i = 0 ; i < 7; i++){
                 MeterIds[i] = "MID-" + i;
                 ElecValues[i] = rnd.nextInt(99);
             }
             long curTime = Calendar.getInstance().getTimeInMillis();
 
-            for(int i = 0 ; i < 4 ; i++){
+            for(int i = 0 ; i < 7 ; i++){
                 ctx.collect(new ElecMeterReading(MeterIds[i] , curTime , ElecValues[i]));
             }
         }
