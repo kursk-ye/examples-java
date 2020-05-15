@@ -12,6 +12,8 @@ import org.apache.flink.queryablestate.client.QueryableStateClient;
 import java.net.UnknownHostException;
 import java.util.concurrent.CompletableFuture;
 
+// 虽然程序可以运行，但不知道是不是JobId的问题，查不到对应的state
+
 public class ClientDemo {
     public static void main(String[] args) throws UnknownHostException {
         QueryableStateClient client = new QueryableStateClient("127.0.0.1", 9076);

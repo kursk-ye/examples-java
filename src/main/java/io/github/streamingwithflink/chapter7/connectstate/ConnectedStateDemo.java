@@ -20,50 +20,52 @@ public class ConnectedStateDemo {
         env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
 
         DataStream<ElecMeterReading> elecStream = env.addSource(new ElecMeterSource());
-        DataStream<ThresholdUpdate>  thresholds =
+        DataStream<ThresholdUpdate> thresholds =
                 env.fromElements(
-                        new ThresholdUpdate("MID-1",20.0), new ThresholdUpdate("MID-1",30.0));
+                        new ThresholdUpdate("MID-1", 20.0), new ThresholdUpdate("MID-2", 30.0)); // 这不就是档案数据的例子么？
         KeyedStream<ElecMeterReading, String> keyedSensorData = elecStream
                 .keyBy(r -> r.getId());
 
         MapStateDescriptor broadcastStateDescriptor =
-                new MapStateDescriptor<String, Double>("thresholds" , Types.STRING, Types.DOUBLE);
-        BroadcastStream<ThresholdUpdate> broadcastThresholds =  thresholds.broadcast(broadcastStateDescriptor);
+                new MapStateDescriptor<String, Double>("thresholds", Types.STRING, Types.DOUBLE);
+        BroadcastStream<ThresholdUpdate> broadcastThresholds = thresholds.broadcast(broadcastStateDescriptor);
 
-        DataStream<Alerts<String,Double,Double>> alerts = keyedSensorData
+        DataStream<Alerts<String, Double, Double>> alerts = keyedSensorData
                 .connect(broadcastThresholds)
-                .process(new UpdatableTemperatureAlertFunction());
+                .process(new UpdatableElecValueAlertFunction());
+
+        alerts.print();
 
         env.execute();
     }
 }
 
 
-class UpdatableTemperatureAlertFunction
-        extends KeyedBroadcastProcessFunction<String , ElecMeterReading ,ThresholdUpdate ,
-        Alerts<String,Double,Double>>{
+class UpdatableElecValueAlertFunction
+        extends KeyedBroadcastProcessFunction<String, ElecMeterReading, ThresholdUpdate,
+        Alerts<String, Double, Double>> {
 
-    private MapStateDescriptor<String,Double> thresholdStateDescriptor =
-        new MapStateDescriptor("thresholds" ,Types.STRING,Types.DOUBLE);
-    private ValueState<Double> lastTempState ;
+    private MapStateDescriptor<String, Double> thresholdStateDescriptor =
+            new MapStateDescriptor("thresholds", Types.STRING, Types.DOUBLE);
+    private ValueState<Double> lastTempState;
 
     @Override
     public void open(Configuration parameters) throws Exception {
         ValueStateDescriptor<Double> lastTempDescriptor =
-                new ValueStateDescriptor<Double>("lastTemp" , Types.DOUBLE);
+                new ValueStateDescriptor<Double>("lastTemp", Types.DOUBLE);
         lastTempState = getRuntimeContext().getState(lastTempDescriptor);
     }
 
     @Override
     public void processElement(ElecMeterReading value, ReadOnlyContext ctx,
                                Collector<Alerts<String, Double, Double>> out) throws Exception {
-        ReadOnlyBroadcastState<String ,Double> thresholds =  ctx.getBroadcastState(thresholdStateDescriptor);
-        if(thresholds.contains(value.getId())){
+        ReadOnlyBroadcastState<String, Double> thresholds = ctx.getBroadcastState(thresholdStateDescriptor);
+        if (thresholds.contains(value.getId())) {
             Double sensorThreshold = thresholds.get(value.getId());
             Double lastTemp = lastTempState.value();
-            Double diff = Math.abs(value.getDayElecValue()- lastTemp) ;
-            if (diff > sensorThreshold){
-                out.collect(new Alerts<>(value.getId(),diff ,sensorThreshold));
+            Double diff = Math.abs(value.getDayElecValue() - lastTemp);
+            if (diff > sensorThreshold) {
+                out.collect(new Alerts<>(value.getId(), diff, sensorThreshold));
             }
         }
 
@@ -73,10 +75,10 @@ class UpdatableTemperatureAlertFunction
     @Override
     public void processBroadcastElement(ThresholdUpdate value, Context ctx,
                                         Collector<Alerts<String, Double, Double>> out) throws Exception {
-        BroadcastState<String,Double> thresholds =  ctx.getBroadcastState(thresholdStateDescriptor);
+        BroadcastState<String, Double> thresholds = ctx.getBroadcastState(thresholdStateDescriptor);
 
-        if (value.threshold != 0.0d){
-            thresholds.put(value.id ,value.threshold);
+        if (value.threshold != 0.0d) {
+            thresholds.put(value.id, value.threshold);
         } else {
             thresholds.remove(value.id);
         }

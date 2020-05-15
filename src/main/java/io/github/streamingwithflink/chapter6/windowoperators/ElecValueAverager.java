@@ -14,15 +14,15 @@ class ElecValueAverager extends ProcessWindowFunction<ElecMeterReading, ElecAvge
         int wsize = 0;
         String id = "";
 
-        for(ElecMeterReading e: elements){
-            wsum = e.getDayElecValue()+wsum;
+        for (ElecMeterReading e : elements) {
+            wsum = e.getDayElecValue() + wsum;
             wsize++;
             id = e.getId();
         }
 
         avg = wsum / wsize;
 
-        ElecAvge avgOut = new ElecAvge(id,avg,wsize);
+        ElecAvge avgOut = new ElecAvge(id, avg, wsize);
 
         out.collect(avgOut);
         System.out.println(avgOut.toString());
