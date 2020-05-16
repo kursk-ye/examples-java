@@ -16,8 +16,8 @@ import java.util.Map;
 public abstract class DataHubBase<IN> {
 
     private String TEST_ENDPOINT;
-    private transient String TEST_AK;
-    private transient String TEST_SK;
+    private transient String accessId;
+    private transient String accessKey;
 
     private String ODPS_ENDPOINT = "** odps endpoint **";
     private String ODPS_TUNNEL_ENDPOINT = "** tunnel endpoint **";
@@ -42,8 +42,8 @@ public abstract class DataHubBase<IN> {
             this.TEST_ENDPOINT = TEST_ENDPOINT;
         }
 
-        this.TEST_AK = "***";
-        this.TEST_SK = "***";
+        this.accessId = "---";
+        this.accessKey = "---";
         createClient();
 
         this.AppName = AppName;
@@ -51,7 +51,7 @@ public abstract class DataHubBase<IN> {
 
     private void createClient() {
         this.client = DatahubClientBuilder.newBuilder().setDatahubConfig(
-                new DatahubConfig(this.getTestEndpoint(), new AliyunAccount(this.TEST_AK, this.TEST_SK), enablePb)
+                new DatahubConfig(this.getTestEndpoint(), new AliyunAccount(this.accessId, this.accessKey), enablePb)
         ).build();
     }
 
