@@ -2,7 +2,7 @@ package io.github.streamingwithflink.chapter8;
 
 import java.io.Serializable;
 
-public class PoJoElecMeterReading implements Serializable {
+public class PoJoElecMeterReading implements Serializable,CommonPOJO {
     private String id;
     private Long timestamp;
     private Double dayelecvalue;
@@ -19,6 +19,16 @@ public class PoJoElecMeterReading implements Serializable {
     @Override
     public String toString() {
         return "(ElecMeterReading: " + "id: " + this.id + ", timestamp: " + this.timestamp + ", dayelecvalue: " + this.dayelecvalue + ")";
+    }
+
+    @Override
+    public String getKey() {
+        return getId();
+    }
+
+    @Override
+    public Object getValue() {
+        return getDayelecvalue();
     }
 
     public String getId() {
