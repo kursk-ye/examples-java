@@ -9,7 +9,7 @@ public class OdpsClient {
   private final String ACCESS_ID = "**";
   private final String ACCESS_KEY = "**";
   private final String ENDPOINT = "http://service.cn-shanghai.maxcompute.aliyun.com/api";
-  private final String PROJECT_NAME = "ycxmkf";
+  private final String PROJECT_NAME = "**";
 
   public OdpsClient() {
     Account account = new AliyunAccount(ACCESS_ID, ACCESS_KEY);
