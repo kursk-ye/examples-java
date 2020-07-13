@@ -42,8 +42,8 @@ public abstract class DataHubBase<IN> {
             this.TEST_ENDPOINT = TEST_ENDPOINT;
         }
 
-        this.accessId = "---";
-        this.accessKey = "---";
+        this.accessId = "***";
+        this.accessKey = "***";
         createClient();
 
         this.AppName = AppName;
@@ -121,7 +121,7 @@ public abstract class DataHubBase<IN> {
 
         /*System.out.println("sub Id " + subId + " count is " + count);
         System.out.println("sub Id " + subId + " recordEntries size is " + recordEntries.size());*/
-        return client.putRecords(projectName, topicName, recordEntries);
+        return client.putRecords(projectName, topicName,  recordEntries);
     }
 
     public PutRecordsByShardResult putRecordsByShard(String projectName, String topicName, String shardId, List<RecordEntry> records) {

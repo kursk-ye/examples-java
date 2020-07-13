@@ -15,7 +15,7 @@ public class DataHubTuple2FlinkDemo {
     StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
     env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
     env.enableCheckpointing(3600_000L);
-    env.setParallelism(2);
+    env.setParallelism(1);
 
     DataStream<PoJoElecMeterReading> source =
         env.addSource(new DataHubTupleSource()).uid("source").setParallelism(1);

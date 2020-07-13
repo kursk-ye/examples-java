@@ -15,11 +15,11 @@ public class DataHubTupleSource extends DataHubSource<PoJoElecMeterReading> {
   @Override
   public void run(SourceContext<PoJoElecMeterReading> ctx) throws Exception {
     String endpoint = "https://dh-cn-shanghai.aliyuncs.com";
-    String accessId = "---";
-    String accessKey = "---";
+    String accessId = "***";
+    String accessKey = "***";
     String project = "yecustomproject3";
     String topic = "kmg_tuple";
-    String subId = "158960095954734GXF";
+    String subId = "1594612865441CSK4M";
 
     Consumer dataConsumer =
         DatahubTupleConsumer.createConsumer(endpoint, accessId, accessKey, project, topic, subId);

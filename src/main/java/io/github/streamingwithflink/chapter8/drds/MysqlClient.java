@@ -5,12 +5,12 @@ import io.github.streamingwithflink.chapter8.CommonPOJO;
 import java.sql.*;
 
 public class MysqlClient {
-  private String url = "****";
-  private String dbName = "***";
+  private String url = "***";
+  private String dbName = "ydcj";
   private String driver = "com.mysql.cj.jdbc.Driver";
   /// password!!!!!!!!!!!!!!!!!!!!!!!!!!!
   private String userName = "***";
-  private String password = "****";
+  private String password = "***";
 
   private Connection connect = null;
   private Statement statement = null;
@@ -52,6 +52,27 @@ public class MysqlClient {
     }
   }
 
+  public <T extends CommonPOJO> void updateDB(T record) {
+    try {
+      // why in MysqlClient constructor method cause error
+      // com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after connection closed
+      connect = DriverManager.getConnection(url + dbName,userName,password);
+
+      preparedStatement =
+          connect.prepareStatement(
+              "update  YL_TEST set dayelecvalue = ? where id  = ?");
+      preparedStatement.setDouble(1, (Double) record.getValue()) ;
+      preparedStatement.setString(2, record.getKey());
+
+      preparedStatement.executeUpdate();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }finally{
+      close();
+    }
+  }
+
   public ResultSet readDB(){
 
     try{
@@ -68,8 +89,24 @@ public class MysqlClient {
     return resultSet;
   }
 
+  public ResultSet readDB(String id){
+
+    try{
+      connect = DriverManager.getConnection(url + dbName,userName,password);
+      preparedStatement = connect.prepareStatement("select id ,mid,dayelecvalue from YL_TEST where id = '"+ id + "'");
+      resultSet = preparedStatement.executeQuery();
+
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    } finally{
+      // not close here!
+      // close();
+    }
+    return resultSet;
+  }
+
   // You need to close the resultSet
-  private void close() {
+  public void close() {
     try {
       if (resultSet != null) {
         resultSet.close();

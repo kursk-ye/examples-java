@@ -1,9 +1,6 @@
 package io.github.streamingwithflink.chapter8.datahub;
 
-import com.aliyun.datahub.client.model.Field;
-import com.aliyun.datahub.client.model.FieldType;
-import com.aliyun.datahub.client.model.PutRecordsResult;
-import com.aliyun.datahub.client.model.RecordSchema;
+import com.aliyun.datahub.client.model.*;
 import io.github.streamingwithflink.chapter8.PoJoElecMeterReading;
 
 import java.util.*;
@@ -24,7 +21,7 @@ public class TestProducer {
 
         List<PoJoElecMeterReading> list = new ArrayList<>();
 
-        for(int i =0 ; i< 50; i++){
+        for(int i =0 ; i< 100; i++){
             int finalI = i;
             list.add(new PoJoElecMeterReading(){{
                 this.setId("MID-"+ finalI);

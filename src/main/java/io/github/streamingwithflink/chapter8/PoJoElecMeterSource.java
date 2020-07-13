@@ -12,7 +12,7 @@ import java.util.Random;
 public class PoJoElecMeterSource extends RichParallelSourceFunction<PoJoElecMeterReading> {
     private Boolean running = true;
     private Long count = 0L;
-    private int arraySize = 10_000;
+    private int arraySize = 20;
 
     private transient ListState<Long> checkpointedCount;
 
@@ -21,7 +21,7 @@ public class PoJoElecMeterSource extends RichParallelSourceFunction<PoJoElecMete
         Random rnd = new Random();
         int taskIdx = this.getRuntimeContext().getIndexOfThisSubtask();
 
-        while (running && this.count < 1000) {
+        while (running && this.count < arraySize) {
             String[] MeterIds = new String[arraySize];
             double[] ElecValues = new double[arraySize];
 
