@@ -15,6 +15,7 @@ public class SinkMysqlDemo {
 
       DataStream<PoJoElecMeterReading> source =  env.addSource( new PoJoElecMeterSource());
 
+
       DataStreamSink sinkstream= source.addSink(new SinkMysqlFunction());
 
       env.execute();

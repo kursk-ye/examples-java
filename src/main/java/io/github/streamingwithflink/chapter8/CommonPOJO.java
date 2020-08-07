@@ -7,4 +7,6 @@ public interface CommonPOJO {
     String getKey();
 
     Object getValue();
+
+
 }

@@ -23,7 +23,7 @@ under the License.
 
     <groupId>io.github.streamingwithflink</groupId>
     <artifactId>examples-java</artifactId>
-    <version>1.0</version>
+    <version>1.1.2</version>
     <packaging>jar</packaging>
 
     <name>Java Examples for Stream Processing with Apache Flink</name>
@@ -86,11 +86,11 @@ under the License.
             <artifactId>flink-queryable-state-runtime_${scala.binary.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
-<!--        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-queryable-state-client-java_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.apache.flink</groupId>
+                    <artifactId>flink-queryable-state-client-java_${scala.binary.version}</artifactId>
+                    <version>${flink.version}</version>
+                </dependency>-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-queryable-state-client-java</artifactId>
@@ -181,6 +181,19 @@ under the License.
             <artifactId>odps-sdk-udf</artifactId>
             <version>0.29.10-public</version>
         </dependency>
+
+        <!-- hdfs -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>3.2.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun.datahub</groupId>
+            <artifactId>datahub-client-library</artifactId>
+            <version>1.1.10-public</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -199,49 +212,69 @@ under the License.
             <!-- We use the maven-shade plugin to create a fat jar that contains all necessary dependencies. -->
             <!-- Change the value of <mainClass>...</mainClass> if your program entry point changes. -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.0.0</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>io.github.streamingwithflink.chapter5.KeyedTransformations</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
                 <executions>
-                    <!-- Run shade goal on package phase -->
                     <execution>
-                        <phase>package</phase>
+                        <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                        <phase>package</phase> <!-- bind to the packaging phase -->
                         <goals>
-                            <goal>shade</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.apache.flink:force-shading</exclude>
-                                    <exlude>org.apache.flink:flink-shaded-netty</exlude>
-                                    <exlude>org.apache.flink:flink-shaded-guava</exlude>
-                                    <exclude>com.google.code.findbugs:jsr305</exclude>
-                                    <exclude>org.slf4j:*</exclude>
-                                    <exclude>log4j:*</exclude>
-                                </excludes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <!-- Do not copy the signatures in the META-INF folder.
-                                    Otherwise, this might cause SecurityExceptions when using the JAR. -->
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.streamingwithflink.StreamingJob</mainClass>
-                                </transformer>
-                            </transformers>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!--
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-shade-plugin</artifactId>
+                            <version>3.0.0</version>
+                            <executions>
+                                <execution>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>shade</goal>
+                                    </goals>
+                                    <configuration>
+                                        <artifactSet>
+                                            <excludes>
+                                                <exclude>org.apache.flink:force-shading</exclude>
+                                                <exlude>org.apache.flink:flink-shaded-netty</exlude>
+                                                <exlude>org.apache.flink:flink-shaded-guava</exlude>
+                                                <exclude>com.google.code.findbugs:jsr305</exclude>
+                                                <exclude>org.slf4j:*</exclude>
+                                                <exclude>log4j:*</exclude>
+                                            </excludes>
+                                        </artifactSet>
+                                        <filters>
+                                            <filter>
+                                                <artifact>*:*</artifact>
+                                                <excludes>
+                                                    <exclude>META-INF/*.SF</exclude>
+                                                    <exclude>META-INF/*.DSA</exclude>
+                                                    <exclude>META-INF/*.RSA</exclude>
+                                                </excludes>
+                                            </filter>
+                                        </filters>
+                                        <transformers>
+                                            <transformer
+                                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                                <mainClass>io.github.streamingwithflink.chapter5.BasicTransformations</mainClass>
+                                            </transformer>
+                                        </transformers>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>-->
         </plugins>
 
         <pluginManagement>
@@ -256,7 +289,7 @@ under the License.
                         <lifecycleMappingMetadata>
                             <pluginExecutions>
                                 <pluginExecution>
-                                    <pluginExecutionFilter>
+                                    <!--<pluginExecutionFilter>
                                         <groupId>org.apache.maven.plugins</groupId>
                                         <artifactId>maven-shade-plugin</artifactId>
                                         <versionRange>[3.0.0,)</versionRange>
@@ -266,7 +299,7 @@ under the License.
                                     </pluginExecutionFilter>
                                     <action>
                                         <ignore/>
-                                    </action>
+                                    </action>-->
                                 </pluginExecution>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
